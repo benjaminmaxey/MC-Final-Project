@@ -23,4 +23,4 @@ loop:
 	cmp r1,#0			@ If width is 0, return
 	bne loop
 	mov r0,r2
-	ldmfd sp!,{lr}
+	ldmfd sp!,{pc}
