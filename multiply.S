@@ -115,9 +115,8 @@ ldmfd sp!, {r2, r3}
 @@Combine sign Sr, the exponent Er, and significand Mr using OR
 ldr r7, =#0x00800000 @1.f
 BIC r4, r4, r7 @clear leading 1 of Mr
-ORR r2, r2, r3 @include Sr and Er
-ORR r2, r2, r4 @include Sr, Er, and Mr
-mov r0, r2 @move result into return register
+ORR r0, r2, r3 @include Sr and Er
+ORR r0, r0, r4 @include Sr, Er, and Mr
 
 done:
 
