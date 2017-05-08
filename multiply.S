@@ -122,4 +122,3 @@ mov r0, r2 @move result into return register
 done:
 
 ldmfd sp!, {r4-r8, pc}
-stop:	B stop
