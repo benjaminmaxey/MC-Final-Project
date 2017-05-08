@@ -15,11 +15,11 @@ stmfd sp!, {r4-r8, lr}
 ldr r2, =#80000000
 AND r3, r0, r2
 CMP r3, #0
-moveq r2, #0
+moveq r0, #0
 BEQ done
 AND r3, r1, r2
 CMP r3, #0
-moveq r2, #0
+moveq r0, #0
 BEQ done
 
 @@Read MSB(bit 32) of both values
