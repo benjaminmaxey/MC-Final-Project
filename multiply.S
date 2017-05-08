@@ -1,12 +1,30 @@
 @Code for MC final project - floating point multiplication
 
+	.data
+msg: .ascii "The result of the multiplication in hex is: 0x%08x\n"
+	.align 2
+
 	.text
-	.global multiply
+.global multiply
+
 @@Multiplies two numbers in single precision format
 @@param(r0 = 1st number, r1 = 2nd number)
 @@return(r0 = product in single precision format)
 
-stmfd sp!, {r4-r7, lr}
+multiply:
+stmfd sp!, {r4-r8, lr}
+
+@@Check 0 case; if either of them are 0, then the result of the multiplication is 0
+@clear out sign bit cause we don't care if it's pos 0 or neg 0
+ldr r2, =#80000000
+AND r3, r0, r2
+CMP r3, #0
+moveq r2, #0
+BEQ done
+AND r3, r1, r2
+CMP r3, #0
+moveq r2, #0
+BEQ done
 
 @@Read MSB(bit 32) of both values
 ldr r4, =#0x80000000
@@ -19,11 +37,7 @@ AND r3, r1, r4	@1&&1 = 1, 0&&1 = 0
 ldr r5, =#0x807fffff
 BIC r3, r0, r5	@bit clear everything except for e-b bits
 BIC r4, r1, r5	@r3 = Ea, r4 = Eb
-@@Check 0 case; if either of them are 0, then the result of the multiplication is 0
-@CMP r3, #0
-@BEQ done
-@CMP r4, #0
-@BEQ done
+
 	@@SUB 127 from both for Ea and Eb
 	ldr r5, =#0x3f800000
 	SUB r3, r3, r5	@r3 = Ea
@@ -102,18 +116,14 @@ ldmfd sp!, {r2, r3}
 		@add 127 to Er
 	ldr r5, =#0x3f800000
 	ADD r3, r3, r5 @e+127; r3 = Er
-@done:
+
 @@Combine sign Sr, the exponent Er, and significand Mr using OR
 ldr r7, =#0x00800000 @1.f
 BIC r4, r4, r7 @clear leading 1 of Mr
 ORR r2, r2, r3 @include Sr and Er
 ORR r2, r2, r4 @include Sr, Er, and Mr
 
-@@Print result to check (6.25*2.5 = 15.625(0x417a0000)
-@ldr r0, =msg
-@mov r1, r2
-@bl printf
+done:
 
-mov r0, r2
-ldmfd sp!, {r4-r7, pc}
-
+ldmfd sp!, {r4-r8, pc}
+stop:	B stop
