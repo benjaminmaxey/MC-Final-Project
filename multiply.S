@@ -1,9 +1,5 @@
 @Code for MC final project - floating point multiplication
 
-	.data
-msg: .ascii "The result of the multiplication in hex is: 0x%08x\n"
-	.align 2
-
 	.text
 .global multiply
 
@@ -68,13 +64,12 @@ rorMb:	AND r7, r5, r6 @get the first bit of Mb
 	mul r4, r4, r5 @Ma*Mb = r4 = Mr
 
 	@Shift Mr back to its place [24:0] (with hidden 1) b/c after the multiplication it's not in the single precision format'
-	ldr r6, =#0x00800000 @is the hidden one in the 24th bit slot?
-lslMr:  AND r7, r4, r6
+	ldr r6, =#0x00800000 
+lslMr:  AND r7, r4, r6 @is the hidden 1 in the 24th bit slot?
 	CMP r7, r6 @are the bits equal
 	LSLNE r4, r4, #1 @if not, shift left by 1
 	BNE lslMr @keep shifting
 
-mov r5, r0 @preserve first number n
 mov r6, r1 @preserve second number m
 stmfd sp!, {r2, r3} @preserve Sr and Er
 	@@Find where the radix ends up after multiplication
